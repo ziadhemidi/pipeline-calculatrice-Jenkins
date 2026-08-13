@@ -29,7 +29,7 @@ pipeline {
                     }
                 }
             }
-
+            
         stage('Deliver') {
             agent any
             environment {
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 dir(path: env.BUILD_ID) {
                     unstash(name: 'compiled-results')
-                    sh "docker run --rm --user \$(id -u):\$(id -g) -v ${VOLUME} ${IMAGE} 'pyinstaller -F prog.py'"
+                    sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F prog.py && chown -R \$(stat -c '%u:%g' /src) /src/build /src/dist'"
                 }
             }
             post {
